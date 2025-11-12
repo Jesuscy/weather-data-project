@@ -5,7 +5,13 @@ import requests_cache
 from retry_requests import retry
 from requests import RequestException
 import logging
-from airflow.sdk import DAG
+
+from airflow.sdk import DAG, PythonOperator
+from airflow.operators.python_operator import PythonOperator 
+
+from azure.identity import ClientSecretCredential
+from azure.storage.filedatalake import DataLakeServiceClient
+from azure.storage.filedatalake import DataLakeFileClient
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -22,7 +28,9 @@ params = {
 	"hourly": "temperature_2m",
 }
 
-def weather_request():
+
+
+def weather_request(url, params):
 
 	try : 
 		responses = openmeteo.weather_api(url, params=params)
@@ -51,7 +59,38 @@ def weather_request():
 		return full_data_json
 	
 	except RequestException as e: 
-		logger.error(f"Error en la peti {e}")
+		logger.error(f"Error en la request {e}")
 	except Exception as e:
 		logger.error(f"Error {e}")
 
+	try:
+		credential = ClientSecretCredential(
+		tenant_id="",
+		client_id="",
+		client_secret=""
+			)
+		service_client = DataLakeServiceClient(account_url="", credential=credential)
+		file_system_client = service_client.create_file_system_if_not_exists(file_system="weather-container-landing")
+		file_client = file_system_client.create_file(f"weather_data_{pd.Timestamp.now().strftime('%Y%m%d%H%M%S')}.json")
+		file_client.append_data(full_data_json, offset=0, length=len(full_data_json))
+		file_client.flush_data(len(full_data_json))
+		logger.info("Data uploaded to Data Lake successfully.")
+	
+	except Exception as e:	
+		logger.error(f"Error uploading to Data Lake {e}")	
+
+
+dag = DAG(
+	dag_id = "extract_load_weather",
+	schedule = "@daily",
+	start_date = 2025-11-11,
+	catchup = False
+)
+
+extract_weather_task = PythonOperator(
+	task_id = "extract_weather_task",
+	python_callable = weather_request(url=url, params=params),
+	dag = dag
+)
+
+extract_weather_task
