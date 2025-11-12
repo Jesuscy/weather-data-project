@@ -56,25 +56,35 @@ def weather_request(url, params):
 			"data" : temps_date_json
 		}
 		
-		return full_data_json
-	
+		return full_data_json # Me falta subir el json a una ruta local dentro del container tipo archivo temporal.
+		 
 	except RequestException as e: 
 		logger.error(f"Error en la request {e}")
 	except Exception as e:
 		logger.error(f"Error {e}")
+
+	
+
+def upload_to_azure():
 
 	try:
 		credential = ClientSecretCredential(
 		tenant_id="",
 		client_id="",
 		client_secret=""
-			)
+		)
+		
+		full_data_json = ""  # Me falta sacar el json de la ruta local del container (sacar la ruta con xcom). 
+		   
 		service_client = DataLakeServiceClient(account_url="", credential=credential)
 		file_system_client = service_client.create_file_system_if_not_exists(file_system="weather-container-landing")
 		file_client = file_system_client.create_file(f"weather_data_{pd.Timestamp.now().strftime('%Y%m%d%H%M%S')}.json")
 		file_client.append_data(full_data_json, offset=0, length=len(full_data_json))
 		file_client.flush_data(len(full_data_json))
 		logger.info("Data uploaded to Data Lake successfully.")
+
+		# Me falta controlar que solo si funciona correctamente la subida a azure se borre el json, (igual mejor en otra task) 
+
 	
 	except Exception as e:	
 		logger.error(f"Error uploading to Data Lake {e}")	
