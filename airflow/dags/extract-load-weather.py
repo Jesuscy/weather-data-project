@@ -1,13 +1,16 @@
-import openmeteo_requests
+import os
 import json
+from datetime import datetime
 import pandas as pd
+
+import openmeteo_requests
 import requests_cache
 from retry_requests import retry
 from requests import RequestException
-import logging
 
-from airflow.sdk import DAG, PythonOperator
-from airflow.operators.python_operator import PythonOperator 
+import logging
+from airflow import DAG
+from airflow.operators.python import PythonOperator 
 
 from azure.identity import ClientSecretCredential
 from azure.storage.filedatalake import DataLakeServiceClient
@@ -30,7 +33,7 @@ params = {
 
 
 
-def weather_request(url, params):
+def weather_request(url=url, params=params):
 
 	try : 
 		responses = openmeteo.weather_api(url, params=params)
@@ -56,8 +59,20 @@ def weather_request(url, params):
 			"data" : temps_date_json
 		}
 		
-		return full_data_json # Me falta subir el json a una ruta local dentro del container tipo archivo temporal.
-		 
+		daily_full_data_json_path = f"shared/{datetime.now().strftime('%Y%m%d%H%M%S')}" 
+		os.makedirs(daily_full_data_json_path, exist_ok=True)
+		
+		#Meto el json en la carpeta shared
+		try:
+			with open(f"{daily_full_data_json_path}/weather_data.json","w", encoding="utf-8" ) as archivo:
+				json.dump(full_data_json, archivo, ensure_ascii=False, indent=4)
+			logger.info("Weather data extracted successfully.")		
+
+			return daily_full_data_json_path
+		
+		except OSError as e:
+			logger.error(f"Error al guardar el json {e}")
+	
 	except RequestException as e: 
 		logger.error(f"Error en la request {e}")
 	except Exception as e:
@@ -65,7 +80,7 @@ def weather_request(url, params):
 
 	
 
-def upload_to_azure():
+def upload_to_azure(**kwargs):
 
 	try:
 		credential = ClientSecretCredential(
@@ -73,17 +88,28 @@ def upload_to_azure():
 		client_id="",
 		client_secret=""
 		)
+		full_data_json_path = kwargs['ti'].xcom_pull(task_ids='extract_weather_task')
 		
-		full_data_json = ""  # Me falta sacar el json de la ruta local del container (sacar la ruta con xcom). 
-		   
-		service_client = DataLakeServiceClient(account_url="", credential=credential)
-		file_system_client = service_client.create_file_system_if_not_exists(file_system="weather-container-landing")
-		file_client = file_system_client.create_file(f"weather_data_{pd.Timestamp.now().strftime('%Y%m%d%H%M%S')}.json")
-		file_client.append_data(full_data_json, offset=0, length=len(full_data_json))
-		file_client.flush_data(len(full_data_json))
-		logger.info("Data uploaded to Data Lake successfully.")
+		with open(f"{full_data_json_path}/weather_data.json", "r", encoding="utf-8") as file:
+			full_data_json = json.load(file)
+		
+		full_data_json_str = json.dumps(full_data_json)
 
-		# Me falta controlar que solo si funciona correctamente la subida a azure se borre el json, (igual mejor en otra task) 
+		try:
+			service_client = DataLakeServiceClient(account_url="", credential=credential)
+			file_system_client = service_client.create_file_system_if_not_exists(file_system="weather-container-landing")
+			
+		except AzureError as e:
+			logger.error(f"Error connecting to Data Lake {e}")
+			
+		try:
+			file_client = file_system_client.create_file(f"weather_data_{datetime.now().strftime('%Y%m%d%H%M%S')}.json")
+			file_client.append_data(full_data_json_str, offset=0, length=len(full_data_json_str))
+			file_client.flush_data(len(full_data_json_str))
+			logger.info("Data uploaded to Data Lake successfully.")
+
+		except AzureError as e:
+			logger.error(f"Error uploading file to Data Lake {e}")
 
 	
 	except Exception as e:	
@@ -93,14 +119,20 @@ def upload_to_azure():
 dag = DAG(
 	dag_id = "extract_load_weather",
 	schedule = "@daily",
-	start_date = 2025-11-11,
+	start_date = datetime(2025, 11, 11),
 	catchup = False
 )
 
 extract_weather_task = PythonOperator(
 	task_id = "extract_weather_task",
-	python_callable = weather_request(url=url, params=params),
+	python_callable = weather_request,
 	dag = dag
 )
 
-extract_weather_task
+upload_to_azure_task = PythonOperator(
+	task_id = "upload_to_azure_task",
+	python_callable = upload_to_azure,
+	dag = dag
+)
+
+extract_weather_task >> upload_to_azure_task
