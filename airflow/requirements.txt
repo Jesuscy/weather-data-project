@@ -1,0 +1,8 @@
+apache-airflow==3.1.2
+openmeteo-requests
+requests-cache
+retry-requests
+pandas
+azure-identity
+azure-storage-file-datalake
+azure-core

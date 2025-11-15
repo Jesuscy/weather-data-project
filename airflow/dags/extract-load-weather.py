@@ -15,6 +15,8 @@ from airflow.operators.python import PythonOperator
 from azure.identity import ClientSecretCredential
 from azure.storage.filedatalake import DataLakeServiceClient
 from azure.storage.filedatalake import DataLakeFileClient
+from azure.core.exceptions import AzureError
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -24,6 +26,7 @@ cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)
 retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
 openmeteo = openmeteo_requests.Client(session = retry_session)
 
+shared_dir = "/opt/airflow/shared"
 url = "https://api.open-meteo.com/v1/forecast"
 params = {
 	"latitude": 52.52,
@@ -59,7 +62,7 @@ def weather_request(url=url, params=params):
 			"data" : temps_date_json
 		}
 		
-		daily_full_data_json_path = f"shared/{datetime.now().strftime('%Y%m%d%H%M%S')}" 
+		daily_full_data_json_path = f"{shared_dir}/{datetime.now().strftime('%Y%m%d%H%M%S')}" 
 		os.makedirs(daily_full_data_json_path, exist_ok=True)
 		
 		#Meto el json en la carpeta shared
