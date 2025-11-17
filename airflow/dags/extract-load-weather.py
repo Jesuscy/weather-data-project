@@ -87,9 +87,10 @@ def upload_to_azure(**kwargs):
 
 	try:
 		credential = ClientSecretCredential(
-		tenant_id="",
-		client_id="",
-		client_secret=""
+			tenant_id=os.getenv("TENANT_ID"),
+			client_id=os.getenv("CLIENT_ID"),
+			client_secret=os.getenv("CLIENT_SECRET")
+			
 		)
 		full_data_json_path = kwargs['ti'].xcom_pull(task_ids='extract_weather_task')
 		
