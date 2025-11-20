@@ -20,9 +20,9 @@ En este proyecto he empleado las siguientes tecnologías:
  
 ## Cuaderno de Desarrollo.
 Aquí iré añadiendo todas las tareas que he tenido que llevar a cabo para dejar el proyecto funcional.
--Instalación de docker.
--Creación de imagen personalizada a partir de la imagen que ofrece Airflow en su Documentación.
--Realización de los Scripts de petición y subida a Azure, junto con los test.
--Gestión de dependencias entre la los scripts y airflow, ajustando las versiones para asegurar compatibilidad (Ha sido un paso complicado.)
--Gestión de acceso de Airflow y Databricks a componentes de Azure, Service Principal y demás ...
+- Instalación de docker.
+- Creación de imagen personalizada a partir de la imagen que ofrece Airflow en su Documentación.
+- Realización de los Scripts de petición y subida a Azure, junto con los test.
+- Gestión de dependencias entre la los scripts y airflow, ajustando las versiones para asegurar compatibilidad (Ha sido un paso complicado.)
+- Gestión de acceso de Airflow y Databricks a componentes de Azure, Service Principal y demás ...
 
