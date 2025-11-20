@@ -15,5 +15,6 @@ En principio las teconlogías involucradas en el proyecto será la API de Open M
 En este proyecto he empleado las siguientes tecnologías:
 - Como orquestador utilizo un servidor de Airflow que corre en un Contenedor Docker, he trabajado anteriormente con soluciones como Astro CLI para simplificar el despliegue, pero con la finalidad de tener más control sobre el entorno y asegurar su continuidad esta vez    elijo docker.
 - Para el almacenamiento de datos empleo un Azure Datalake Gen 2, por la cercanía que tengo a Azure he elegido esta opción.
-- Para el procesamiento de los datos he decidido usar Databricks, configurando jobs para el tratamiento de los datos.
+- Para el procesamiento de los datos he decidido usar Databricks, configurando jobs desencadenados por la ingesta de datos.
+- Los scripts de extracción de datos han sido realizados en Python, y la transformación de datos en PySpark.
  
