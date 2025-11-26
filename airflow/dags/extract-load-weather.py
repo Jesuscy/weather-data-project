@@ -39,7 +39,10 @@ params = {
 def weather_request(url=url, params=params):
 
 	try : 
-		responses = openmeteo.weather_api(url, params=params)
+		responses = openmeteo.weather_api(url=url, params=params)
+
+		if not responses:
+			logger.error("ERROR --- API RETURN EMPTY WEATHER DATA")
 
 		response = responses[0]
 		hourly = response.Hourly()
@@ -75,13 +78,13 @@ def weather_request(url=url, params=params):
 		
 		except OSError as e:
 			logger.error(f"Error al guardar el json {e}")
-	
+			raise e 
 	except RequestException as e: 
 		logger.error(f"Error en la request {e}")
+		raise e 
 	except Exception as e:
 		logger.error(f"Error {e}")
-
-	
+		raise e 
 
 def upload_to_azure(**kwargs):
 
@@ -114,11 +117,11 @@ def upload_to_azure(**kwargs):
 
 		except AzureError as e:
 			logger.error(f"Error uploading file to Data Lake {e}")
-
+			raise e
 	
 	except Exception as e:	
 		logger.error(f"Error uploading to Data Lake {e}")	
-
+		raise e
 
 dag = DAG(
 	dag_id = "extract_load_weather",

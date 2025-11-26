@@ -51,6 +51,8 @@ def weather_request(url=url, params=params):
             "longitud": response.Longitude(),
             "data": temps_date_json
         }
+        #Test
+        logger.info(f" ESTE ES EL JSON DEL TIEMPO: {json.dumps(full_data_json)} ")
 
         daily_full_data_json_path = f"{shared_dir}/{datetime.now().strftime('%Y%m%d%H%M%S')}"
         os.makedirs(daily_full_data_json_path, exist_ok=True)
