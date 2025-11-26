@@ -1,20 +1,16 @@
-
 # Airflow
 apache-airflow==3.1.2
 
 # Open-Meteo
 openmeteo-requests==1.7.4
-requests-cache==1.2.1
 retry-requests==2.0.0
-
-# Requests & urllib3 compatibilidad
 requests<3
 urllib3<2
 
 # Data processing
 pandas==2.1.4
 
-# Azure 
+# Azure
 azure-identity==1.25.1
 azure-storage-file-datalake==12.22.0
 azure-core==1.36.0
