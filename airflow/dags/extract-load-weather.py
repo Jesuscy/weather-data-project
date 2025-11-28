@@ -36,7 +36,7 @@ params = {
 
 
 
-def weather_request(url=url, params=params):
+def weather_request(url, params):
 
 	try : 
 		responses = openmeteo.weather_api(url, params=params)
@@ -72,7 +72,7 @@ def weather_request(url=url, params=params):
 		try:
 			with open(f"{daily_full_data_json_path}/weather_data.json","w", encoding="utf-8" ) as archivo:
 				json.dump(full_data_json, archivo, ensure_ascii=False, indent=4)
-			logger.info("Weather data extracted successfully.")		
+			logger.info("********** Weather data extracted successfully ***************")		
 
 			return daily_full_data_json_path
 		
@@ -95,15 +95,22 @@ def upload_to_azure(**kwargs):
 			client_secret=os.getenv("CLIENT_SECRET")
 			
 		)
-		full_data_json_path = kwargs['ti'].xcom_pull(task_ids='extract_weather_task')
-		
-		with open(f"{full_data_json_path}/weather_data.json", "r", encoding="utf-8") as file:
-			full_data_json = json.load(file)
-		
-		full_data_json_str = json.dumps(full_data_json)
+		try:
+
+			full_data_json_path = kwargs['ti'].xcom_pull(task_ids='extract_weather_task')
+			
+			with open(f"{full_data_json_path}/weather_data.json", "r", encoding="utf-8") as file:
+				full_data_json = json.load(file)
+			
+			full_data_json_str = json.dumps(full_data_json)
+			logger.info(f"****** json succesfully located *********")
+
+		except Exception as e:
+			logger.error(f"Error locating json {e}")
+			raise e
 
 		try:
-			service_client = DataLakeServiceClient(account_url="", credential=credential)
+			service_client = DataLakeServiceClient(account_url=os.getenv("STORAGE_ACCOUNT_URL"), credential=credential)
 			file_system_client = service_client.create_file_system_if_not_exists(file_system="weather-container-landing")
 			
 		except AzureError as e:
@@ -133,6 +140,10 @@ dag = DAG(
 extract_weather_task = PythonOperator(
 	task_id = "extract_weather_task",
 	python_callable = weather_request,
+	op_kwargs={
+		"url": url,
+        "params": params
+	},
 	dag = dag
 )
 

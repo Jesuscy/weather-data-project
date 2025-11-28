@@ -80,3 +80,5 @@ extract_weather_task = PythonOperator(
     python_callable=weather_request,
     dag=dag
 )
+ 
+extract_weather_task
