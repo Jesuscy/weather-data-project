@@ -111,10 +111,17 @@ def upload_to_azure(**kwargs):
 
 		try:
 			service_client = DataLakeServiceClient(account_url=os.getenv("STORAGE_ACCOUNT_URL"), credential=credential)
-			file_system_client = service_client.create_file_system_if_not_exists(file_system="weather-container-landing")
-			
+			logger.info(f"******* Datalake conected sucesfully *********")
 		except AzureError as e:
 			logger.error(f"Error connecting to Data Lake {e}")
+			
+		try:
+			file_system_client = service_client.create_file_system("weather-container-landing")   
+			logger.info(f"******* Filesystem created *********")
+
+		except AzureError as e:
+			file_system_client =  service_client.get_file_system_client("weather-container-landing")		
+			logger.info(f"******* Filesystem existed *********")
 			
 		try:
 			file_client = file_system_client.create_file(f"weather_data_{datetime.now().strftime('%Y%m%d%H%M%S')}.json")
