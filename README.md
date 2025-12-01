@@ -24,5 +24,9 @@ Aquí iré añadiendo todas las tareas que he tenido que llevar a cabo para deja
 - Creación de imagen personalizada a partir de la imagen que ofrece Airflow en su Documentación.
 - Realización de los Scripts de petición y subida a Azure, junto con los test.
 - Gestión de dependencias entre la los scripts y airflow, ajustando las versiones para asegurar compatibilidad (Ha sido un paso complicado.)
+- Creación de Azure Databricks Workspace y configuración de cluster.
 - Gestión de acceso de Airflow y Databricks a componentes de Azure, Service Principal y demás ...
-
+- Desarrollo de script PySpark en nootebok de Databricks.
+- Creación de Jobs y Worflows para el procesamiento de los datos.
+  
+  
