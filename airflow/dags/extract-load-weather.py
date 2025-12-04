@@ -122,9 +122,16 @@ def upload_to_azure(**kwargs):
 		except AzureError as e:
 			file_system_client =  service_client.get_file_system_client("weather-container-landing")		
 			logger.info(f"******* Filesystem existed *********")
-			
+
+		try: 
+			data_dir = file_system_client.create_directory("data")
+			logger.info(f"******* Directory created *********")
+		except AzureError as e:
+			data_dir = file_system_client.get_directory_client("data")
+			logger.info(f"******* Directory existed *********")
+
 		try:
-			file_client = file_system_client.create_file(f"weather_data_{datetime.now().strftime('%Y%m%d%H%M%S')}.json")
+			file_client = data_dir.create_file(f"weather_data_{datetime.now().strftime('%Y%m%d%H%M%S')}.json")
 			file_client.append_data(full_data_json_str, offset=0, length=len(full_data_json_str))
 			file_client.flush_data(len(full_data_json_str))
 			logger.info("Data uploaded to Data Lake successfully.")
