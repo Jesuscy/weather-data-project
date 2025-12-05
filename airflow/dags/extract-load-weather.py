@@ -130,8 +130,14 @@ def upload_to_azure(**kwargs):
 			data_dir = file_system_client.get_directory_client("data")
 			logger.info(f"******* Directory existed *********")
 
+		try: 
+			data_date_part_dir = data_dir.create_sub_directory(datetime.now().strftime('%Y-%m-%d'))
+			logger.info(f"******* Directory created *********")
+		except AzureError as e:
+			data_date_part_dir = data_dir.get_sub_directory_client(datetime.now().strftime('%Y-%m-%d'))
+			logger.info(f"******* Directory existed *********")	
+
 		try:
-			data_date_part_dir = data_dir.create_directory(datetime.now().strftime('%Y/%m/%d'))
 			file_client = data_date_part_dir.create_file(f"weather_data_{datetime.now().strftime('%Y%m%d%H%M%S')}.json")
 			file_client.append_data(full_data_json_str, offset=0, length=len(full_data_json_str))
 			file_client.flush_data(len(full_data_json_str))
