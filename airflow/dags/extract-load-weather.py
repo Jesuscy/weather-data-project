@@ -131,7 +131,10 @@ def upload_to_azure(**kwargs):
 			logger.info(f"******* Directory existed *********")
 
 		try:
-			file_client = data_dir.create_file(f"weather_data_{datetime.now().strftime('%Y%m%d%H%M%S')}.json")
+			year_dir = data_dir.create_directory(f" year={str(datetime.now().year)}")
+			month_dir = year_dir.create_directory(f"month={datetime.now().month:02d}")
+			day_dir = month_dir.create_directory(f"day={datetime.now().day:02d}")
+			file_client = day_dir.create_file(f"weather_data_{datetime.now().strftime('%Y%m%d%H%M%S')}.json")
 			file_client.append_data(full_data_json_str, offset=0, length=len(full_data_json_str))
 			file_client.flush_data(len(full_data_json_str))
 			logger.info("Data uploaded to Data Lake successfully.")
