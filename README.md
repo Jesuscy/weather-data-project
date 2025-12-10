@@ -1,5 +1,7 @@
 # weather-data-project
 Proyecto pipeline de datos climáticos diarios e históricos.
+# Arquitectura Proyecto.
+<img width="1220" height="747" alt="pipeline_arq_schema" src="https://github.com/user-attachments/assets/c5060df4-3d5e-460c-b100-1557d58d2628" />
 
 ## Descripción General Del Proyecto.
 
