@@ -9,7 +9,7 @@ Voy a orquestar una pipeline en la que obtendré los datos, los procesaré y tra
 
 En principio las teconlogías involucradas en el proyecto será la API de Open Meteo, Airflow como herramienta de orquestación, Databricks como herramienta de procesamiento de datos, Azure DataLake como capa de almacenamiento y como lenguaje para el desarrollo usaré Python y SQL.
 
-# Arquitectura Proyecto.
+## Arquitectura Proyecto.
 <img width="1220" height="747" alt="pipeline_arq_schema" src="https://github.com/user-attachments/assets/c5060df4-3d5e-460c-b100-1557d58d2628" />
 
 ## Tecnologías Usadas.
