@@ -1,7 +1,5 @@
 # weather-data-project
 Proyecto pipeline de datos climáticos diarios e históricos.
-# Arquitectura Proyecto.
-<img width="1220" height="747" alt="pipeline_arq_schema" src="https://github.com/user-attachments/assets/c5060df4-3d5e-460c-b100-1557d58d2628" />
 
 ## Descripción General Del Proyecto.
 
@@ -10,6 +8,9 @@ La idea del proyecto es obtener diariamente los datos del clima en distintas loc
 Voy a orquestar una pipeline en la que obtendré los datos, los procesaré y transformaré para obtener los resultados deseados, la finalidad será generar un registro de datos adecuado para una capa de reporting.
 
 En principio las teconlogías involucradas en el proyecto será la API de Open Meteo, Airflow como herramienta de orquestación, Databricks como herramienta de procesamiento de datos, Azure DataLake como capa de almacenamiento y como lenguaje para el desarrollo usaré Python y SQL.
+
+# Arquitectura Proyecto.
+<img width="1220" height="747" alt="pipeline_arq_schema" src="https://github.com/user-attachments/assets/c5060df4-3d5e-460c-b100-1557d58d2628" />
 
 ## Tecnologías Usadas.
 En este proyecto he empleado las siguientes tecnologías:
