@@ -30,7 +30,7 @@ Aquí iré añadiendo todas las tareas que he tenido que llevar a cabo para deja
 - Desarrollo de script PySpark en nootebok de Databricks.
 - Creación de Jobs y Worflows para el procesamiento de los datos.
   
-  ## Funcionamiento del proyecto.
+## Funcionamiento del proyecto.
   
 - Desplegar contendores Docker :
   <img width="1569" height="204" alt="Captura desde 2025-12-14 19-21-17" src="https://github.com/user-attachments/assets/57ba5d05-3053-4cf6-880b-3c07d05486ac" />
@@ -40,9 +40,11 @@ Aquí iré añadiendo todas las tareas que he tenido que llevar a cabo para deja
   <img width="2551" height="494" alt="Captura desde 2025-12-14 19-25-20" src="https://github.com/user-attachments/assets/ba8363cd-0751-4db6-9e9e-dac61729e523" />
 - Son procesados por job de Databicks encargados del paso de langing a staging y staging a common:
   <img width="2551" height="514" alt="Captura desde 2025-12-14 19-26-59" src="https://github.com/user-attachments/assets/9b0e341d-073f-4142-a4cb-45a3e322aa9f" />
-  En este paso los datos son enriquecidos, se obtienen país y ciudad a partir de la latitud y longitud.
-  
+  (En este paso los datos son enriquecidos, se obtienen país y ciudad a partir de la latitud y longitud)
 - Los datos llegan a common, particionados por fecha, país, ciudad y hora, permitiendo llevar un registro diario del clíma:
   <img width="2551" height="514" alt="image" src="https://github.com/user-attachments/assets/defe2628-787a-4360-a139-c94bd230a815" />
 
+## Puntos de mejora:
+- Registrar los datos clímaticos de varias aplicaciones en la pipeline, esto no me ha sido posible por limitaciones de la versión gratuita de API.
+- Dag de borrado de archivos de backup que quedan en los contenedores, me refiero a los archivos que quedan en shared, si fuese a mantener el proyecto activo semanalmente los borraría, por el costo de mantener Azure activo no lo mantendré, así que no es necesario.
   
