@@ -30,4 +30,15 @@ Aquí iré añadiendo todas las tareas que he tenido que llevar a cabo para deja
 - Desarrollo de script PySpark en nootebok de Databricks.
 - Creación de Jobs y Worflows para el procesamiento de los datos.
   
+  ## Funcionamiento del proyecto.
   
+- Desplegar contendores Docker :
+  <img width="1569" height="204" alt="Captura desde 2025-12-14 19-21-17" src="https://github.com/user-attachments/assets/57ba5d05-3053-4cf6-880b-3c07d05486ac" />
+- La imagen de Airflow instalada en el contenedor diariamente ejecuta la extración y subida a langing de los datos:
+  <img width="2551" height="494" alt="Captura desde 2025-12-14 19-24-25" src="https://github.com/user-attachments/assets/88aabc53-2eae-491c-a5b3-abfd533d1169" />
+- Datos llegan a landing:
+  <img width="2551" height="494" alt="Captura desde 2025-12-14 19-25-20" src="https://github.com/user-attachments/assets/ba8363cd-0751-4db6-9e9e-dac61729e523" />
+- Son procesados por job de Databicks encargados del paso de langing a staging y staging a common:
+  <img width="2551" height="514" alt="Captura desde 2025-12-14 19-26-59" src="https://github.com/user-attachments/assets/9b0e341d-073f-4142-a4cb-45a3e322aa9f" />
+
+
