@@ -45,6 +45,6 @@ Aquí iré añadiendo todas las tareas que he tenido que llevar a cabo para deja
   <img width="2551" height="514" alt="image" src="https://github.com/user-attachments/assets/defe2628-787a-4360-a139-c94bd230a815" />
 
 ## Puntos de mejora:
-- Registrar los datos clímaticos de varias aplicaciones en la pipeline, esto no me ha sido posible por limitaciones de la versión gratuita de API.
+- Registrar los datos clímaticos de varias ubicaciones en la pipeline, esto no me ha sido posible por limitaciones de la versión gratuita de API.
 - Dag de borrado de archivos de backup que quedan en los contenedores, me refiero a los archivos que quedan en shared, si fuese a mantener el proyecto activo semanalmente los borraría, por el costo de mantener Azure activo no lo mantendré, así que no es necesario.
   
